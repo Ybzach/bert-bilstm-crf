@@ -10,7 +10,7 @@ from data_loader import NerDataset
 from tqdm import tqdm
 from seqeval.metrics import classification_report
 from torch.utils.data import DataLoader
-from transformers import get_linear_schedule_with_warmup, BertTokenizer
+from transformers import get_linear_schedule_with_warmup, BertTokenizerFast
 from torch.optim import AdamW
 
 
@@ -142,7 +142,7 @@ def main(data_name):
     with open(os.path.join(args.output_dir, "ner_args.json"), "w", encoding="utf-8") as fp:
         json.dump(vars(args), fp, ensure_ascii=False, indent=2)
 
-    tokenizer = BertTokenizer.from_pretrained(args.bert_dir)
+    tokenizer = BertTokenizerFast.from_pretrained(args.bert_dir)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     with open(os.path.join(args.data_path, "train.txt"), "r", encoding="utf-8") as fp:
@@ -180,9 +180,9 @@ def main(data_name):
         id2label=args.id2label
     )
 
-    # train.train()
+    train.train()
 
-    report = train.test()
+    # report = train.test()
     print(report)
 
 

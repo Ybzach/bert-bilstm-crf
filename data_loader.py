@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-
+import math
 from torch.utils.data import Dataset
 
 
@@ -41,21 +41,23 @@ class NerDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, item):
-        tokenized_input = tokenize_and_align_labels(item)
+        tokenized_input = self.tokenize_and_align_labels(self.data[item])
         input_ids = tokenized_input['input_ids']
         attention_mask = tokenized_input['attention_mask']
         labels = tokenized_input['labels']
 
         number_of_tokens = len(tokenized_input['input_ids'])
         if number_of_tokens > (self.max_seq_len - 2):
-            crop = int((number_of_tokens - (self.max_seq_len - 2)) / 2)
-            input_ids = [0] + input_ids[crop:self.max_seq_len - crop] + [0]
-            labels = [0] + labels[crop:self.max_seq_len - crop] + [0]
+            crop = int(math.ceil((number_of_tokens - (self.max_seq_len - 2)) / 2))
+            input_ids = [0] + input_ids[crop:number_of_tokens - crop] + [0]
+            attention_mask = [1] + labels[crop:number_of_tokens - crop] + [1]
+            labels = [0] + labels[crop:number_of_tokens - crop] + [0]
 
         input_ids = input_ids + [0] * (self.max_seq_len - len(input_ids))
-        attention_mask = attention_mask + [0] * (self.max_seq_len - len(input_ids))
-        labels = labels  + [0] * (self.max_seq_len - len(input_ids))
-
+        attention_mask = attention_mask + [0] * (self.max_seq_len - len(attention_mask))
+        labels = labels  + [0] * (self.max_seq_len - len(labels))
+        if (len(input_ids) == 511) or (len(attention_mask) == 511) or (len(labels) == 511):
+            print("stop")
         input_ids = torch.tensor(np.array(input_ids))
         attention_mask = torch.tensor(np.array(attention_mask))
         labels = torch.tensor(np.array(labels))
