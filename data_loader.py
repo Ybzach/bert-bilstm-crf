@@ -50,7 +50,7 @@ class NerDataset(Dataset):
         if number_of_tokens > (self.max_seq_len - 2):
             crop = int(math.ceil((number_of_tokens - (self.max_seq_len - 2)) / 2))
             input_ids = [0] + input_ids[crop:number_of_tokens - crop] + [0]
-            attention_mask = [1] + labels[crop:number_of_tokens - crop] + [1]
+            attention_mask = [1] + attention_mask[crop:number_of_tokens - crop] + [1]
             labels = [0] + labels[crop:number_of_tokens - crop] + [0]
 
         input_ids = input_ids + [0] * (self.max_seq_len - len(input_ids))
