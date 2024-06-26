@@ -182,10 +182,10 @@ def main(data_name):
 
     train.train()
 
-    # report = train.test()
+    report = train.test()
     print(report)
 
 
 if __name__ == "__main__":
-    data_name = "fyp"
+    data_name = "resume"
     main(data_name)

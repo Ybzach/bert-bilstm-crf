@@ -35,7 +35,7 @@ class NerConfig:
         self.id2label = {i: label for i, label in enumerate(self.bio_labels)}
 
         self.max_seq_len = 512
-        self.epochs = 20
+        self.epochs = 50
         self.train_batch_size = 12
         self.dev_batch_size = 12
         self.bert_learning_rate = 3e-5
